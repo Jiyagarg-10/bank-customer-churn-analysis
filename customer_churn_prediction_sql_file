@@ -1,0 +1,57 @@
+-- =============================================
+-- Bank Customer Churn Analysis - SQL Queries
+-- Dataset: Churn_Modelling (10,000 customers)
+-- =============================================
+
+-- Query 1: Churn Rate by Geography
+-- Finding: Germany churns at double the rate of France and Spain
+SELECT 
+    c5 AS Geography,
+    COUNT(*) AS Total_Customers,
+    SUM(CAST(c14 AS INTEGER)) AS Churned,
+    ROUND(AVG(CAST(c14 AS REAL)) * 100, 2) AS Churn_Rate_Percent
+FROM Churn_Modelling
+WHERE c5 != 'Geography'
+GROUP BY c5
+ORDER BY Churn_Rate_Percent DESC;
+
+-- Query 2: Churn Rate by Active Membership
+-- Finding: Active vs inactive members churn at almost the same rate
+SELECT 
+    c11 AS IsActiveMember,
+    COUNT(*) AS Total_Customers,
+    SUM(CAST(c14 AS INTEGER)) AS Churned,
+    ROUND(AVG(CAST(c14 AS REAL)) * 100, 2) AS Churn_Rate_Percent
+FROM Churn_Modelling
+WHERE c11 != 'IsActiveMember'
+GROUP BY c11
+ORDER BY Churn_Rate_Percent DESC;
+
+-- Query 3: Churn Rate by Number of Products
+-- Finding: 2 products = most loyal (7.58%). 4 products = 100% churn
+SELECT 
+    c10 AS NumOfProducts,
+    COUNT(*) AS Total_Customers,
+    SUM(CAST(c14 AS INTEGER)) AS Churned,
+    ROUND(AVG(CAST(c14 AS REAL)) * 100, 2) AS Churn_Rate_Percent
+FROM Churn_Modelling
+WHERE c10 != 'NumOfProducts'
+GROUP BY c10
+ORDER BY Churn_Rate_Percent DESC;
+
+-- Query 4: Churn Rate by Age Group
+-- Finding: Age 46-60 has 51% churn rate - highest risk segment
+SELECT 
+    CASE 
+        WHEN CAST(c7 AS INTEGER) < 30 THEN 'Under 30'
+        WHEN CAST(c7 AS INTEGER) BETWEEN 30 AND 45 THEN '30-45'
+        WHEN CAST(c7 AS INTEGER) BETWEEN 46 AND 60 THEN '46-60'
+        ELSE 'Over 60'
+    END AS Age_Group,
+    COUNT(*) AS Total_Customers,
+    SUM(CAST(c14 AS INTEGER)) AS Churned,
+    ROUND(AVG(CAST(c14 AS REAL)) * 100, 2) AS Churn_Rate_Percent
+FROM Churn_Modelling
+WHERE c7 != 'Age'
+GROUP BY Age_Group
+ORDER BY Churn_Rate_Percent DESC;
